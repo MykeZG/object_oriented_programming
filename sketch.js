@@ -1,42 +1,41 @@
-let posX, posY;
-let velX, velY;
-let diametro;
-let radio;
-let fondo;
+let particulas = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-
-  radio = ceil(random(10, 50));
-  diametro = radio * 2;
-  posX = random(radio, width - radio);
-  posY = random(radio, height - radio);
-  velX = random(-5, 5);
-  velY = random(-5, 5);
 }
 
 function draw() {
-  background(120);
-  fill(255);
-  noStroke();
-  posX += velX;
-  posY += velY;
+  background(50);
+  let nuevaParticula = new Particula(mouseX, mouseY);
+  particulas.push(nuevaParticula);
+  for (let i = 0; i < particulas.length; i++) {
+    particulas[i].update();
+    particulas[i].display();
+  }
+  /*
+  Esta es una forma de borrar las partículas muertas utilizando un for loop que navega todas las particulas y se pregunta por la variable boleana estaViva
+  Utiliza la función slipice para borra la partícula específica mediante su índice
+  */
 
-  if (posX > width - radio) {
-    fondo(random(200, 100), random(25, 100), random(10, 50));
-    velX *= -1;
+  // for (let i = 0; i < particulas.length; i++) {
+  //   if (!particulas[i].estaViva) {
+  //     particulas.splice(i, 1);
+  //   }
+  // }
+
+  particulas = particulas.filter((pelota) => pelota.estaViva);
+
+  noFill();
+  stroke(252, 99, 145);
+  strokeWeight(1);
+
+  for (let i = 0; i < particulas.length - 1; i++) {
+    line(
+      particulas[i].posx,
+      particulas[i].posy,
+      particulas[i + 1].posx,
+      particulas[i + 1].posy
+    );
   }
-  if (posX < 0 + radio) {
-    fondo(random(50, 100), random(25, 100), random(10, 50));
-    velX = 1;
-  }
-  if (posY > height - radio) {
-    fondo(random(50, 100), random(25, 100), random(10, 50));
-    velY *= -1;
-  }
-  if (posY < 0 + radio) {
-    fondo(random(50, 100), random(25, 100), random(10, 50));
-    velY *= -1;
-  }
-  circle(posX, posY, diametro);
+  console.log(particulas.length);
 }
